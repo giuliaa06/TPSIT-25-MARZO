@@ -54,5 +54,19 @@ class AlunniController
       }
   } 
 
+  public function destroy(Request $request, Response $response, $args){
+    $body = json_decode($request->getBody()->getContents(), true);
 
+    $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
+    $query = "DELETE FROM alunni WHERE id = " .$args['id'];
+    $result = $mysqli_connection->query($query);
+
+    if($result){
+      $response->getBody()->write(json_encode(["message" => "Alunno eliminato"]));
+      return $response->withHeader("Content-type", "application/json")->withStatus(200);
+    }else{
+      $response->getBody()->write(json_encode(["message" => "Alunno non eliminato"]));
+      return $response->withHeader("Content-type", "application/json")->withStatus(404);
+    }
+  }
 }
